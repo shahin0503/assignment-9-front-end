@@ -26,7 +26,7 @@ class _AssignTaskPageState extends State<AssignTaskPage> {
   }
 
   Future<void> fetchUsers() async {
-    final response = await http.get(Uri.parse('http://10.1.86.148:8080/users'));
+    final response = await http.get(Uri.parse('http://192.168.0.102:8080/users'));
     if (response.statusCode == 200) {
       setState(() {
         users = json.decode(response.body);
@@ -67,7 +67,7 @@ class _AssignTaskPageState extends State<AssignTaskPage> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://10.1.86.148:8080/task'),
+        Uri.parse('http://192.168.0.102:8080/task'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(data),
       );

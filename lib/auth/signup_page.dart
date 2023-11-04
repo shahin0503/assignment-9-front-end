@@ -45,7 +45,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
       try {
         var response = await http.post(
-            Uri.parse('http://10.1.86.148:8080/signup'),
+            Uri.parse('http://192.168.0.102:8080/signup'),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode(
                 {'email': email, 'password': password, 'userName': userName}));
