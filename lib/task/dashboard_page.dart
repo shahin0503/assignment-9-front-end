@@ -28,7 +28,7 @@ class _DashboardPageState extends State<DashboardPage> {
     uid = prefs.getString('uid') ?? '';
 
     final response =
-        await http.get(Uri.parse('http://192.168.0.102:8080/task/$uid'));
+        await http.get(Uri.parse('http://10.1.86.148:8080/task/$uid'));
     if (response.statusCode == 200) {
       setState(() {
         tasks = json.decode(response.body);
@@ -40,7 +40,7 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Future<void> updateTaskStatus(String taskId, bool newValue) async {
-    final url = 'http://192.168.0.102:8080/task/$taskId';
+    final url = 'http://10.1.86.148:8080/task/$taskId';
     final Map<String, dynamic> data = {
       'assignedUsers': {uid: newValue}
     };
@@ -64,7 +64,7 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your tasks'),
+        title: const Text('My tasks'),
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.logout_outlined))
         ],
@@ -73,7 +73,7 @@ class _DashboardPageState extends State<DashboardPage> {
           onPressed: () async {
             await Navigator.pushNamed(
               context,
-              assignTaskRoute,
+              taskManagementRoute,
             );
             fetchTasks();
           },

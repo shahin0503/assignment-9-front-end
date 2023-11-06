@@ -1,9 +1,9 @@
-import 'package:assignment9/assign_task_page.dart';
+import 'package:assignment9/task/assign_task_page.dart';
 import 'package:assignment9/auth/login_page.dart';
 import 'package:assignment9/auth/signup_page.dart';
 import 'package:assignment9/constants/routes.dart';
-import 'package:assignment9/dashboard_page.dart';
-import 'package:assignment9/profile_page.dart';
+import 'package:assignment9/task/dashboard_page.dart';
+import 'package:assignment9/task/task_management_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -26,9 +26,9 @@ class MyApp extends StatelessWidget {
       routes: {
         loginRoute: (context) => const LoginPage(),
         signUpRoute: (context) => const SignUpPage(),
-        profileRoute: (context) => const ProfilePage(),
         dashboardRoute: (context) => const DashboardPage(),
         assignTaskRoute: (context) => const AssignTaskPage(),
+        taskManagementRoute: (context) => const TaskManagementPage(),
       },
     );
   }

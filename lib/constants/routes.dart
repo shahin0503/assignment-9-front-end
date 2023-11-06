@@ -1,5 +1,5 @@
 const loginRoute = '/login/';
 const signUpRoute = '/signup/';
-const profileRoute = '/profile/';
 const dashboardRoute = '/dashboard/';
+const taskManagementRoute = '/task-management/';
 const assignTaskRoute = '/assign-task/';

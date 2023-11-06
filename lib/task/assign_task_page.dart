@@ -26,7 +26,7 @@ class _AssignTaskPageState extends State<AssignTaskPage> {
   }
 
   Future<void> fetchUsers() async {
-    final response = await http.get(Uri.parse('http://192.168.0.102:8080/users'));
+    final response = await http.get(Uri.parse('http://10.1.86.148:8080/users'));
     if (response.statusCode == 200) {
       setState(() {
         users = json.decode(response.body);
@@ -67,7 +67,7 @@ class _AssignTaskPageState extends State<AssignTaskPage> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.0.102:8080/task'),
+        Uri.parse('http://10.1.86.148:8080/task'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(data),
       );
@@ -87,6 +87,15 @@ class _AssignTaskPageState extends State<AssignTaskPage> {
 
   @override
   Widget build(BuildContext context) {
+    Map<String, dynamic> arguments =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+    dynamic task = arguments?['task'];
+
+    if (task != null && task is Map<String, dynamic>) {
+      _taskController.text = task['taskName'];
+      selectedUsers = task['assignedUsers'].keys.toList();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Assign Task'),
@@ -97,12 +106,55 @@ class _AssignTaskPageState extends State<AssignTaskPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              TextField(
-                controller: _taskController,
-                decoration: InputDecoration(
-                    hintText: 'Task Name',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15))),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _taskController,
+                      decoration: InputDecoration(
+                          hintText: 'Task Name',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15))),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  SizedBox(
+                    height: 45,
+                    child: ElevatedButton(
+                        onPressed: () async {
+                          if (_taskController.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Task name cannot be empty!')),
+                            );
+                            return;
+                          }
+                          if (selectedUsers.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content:
+                                      Text('Please select at least one user!')),
+                            );
+                            return;
+                          }
+
+                          await assignTask();
+                          setState(() {
+                            _taskController.clear();
+                            selectedUsers.clear();
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Task assigned successfully!')),
+                          );
+
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Assign')),
+                  ),
+                ],
               ),
               const SizedBox(
                 height: 15,
@@ -127,8 +179,8 @@ class _AssignTaskPageState extends State<AssignTaskPage> {
                                 children: [
                                   Text(
                                     userName,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   ),
                                   Text(email)
                                 ],
@@ -136,7 +188,7 @@ class _AssignTaskPageState extends State<AssignTaskPage> {
                               shape: const StadiumBorder(),
                               backgroundColor:
                                   selectedUsers.contains(userData['uid'])
-                                      ? Color.fromARGB(255, 166, 92, 201)
+                                      ? const Color.fromARGB(255, 166, 92, 201)
                                       : Colors.grey,
                             ),
                           );
@@ -147,20 +199,6 @@ class _AssignTaskPageState extends State<AssignTaskPage> {
           ),
         ),
       ),
-      floatingActionButton: ElevatedButton(
-          onPressed: () async {
-            await assignTask();
-            setState(() {
-              _taskController.clear();
-              selectedUsers.clear();
-            });
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Task assigned successfully!')),
-            );
-
-            Navigator.of(context).pop();
-          },
-          child: const Text('Assign')),
     );
   }
 }
